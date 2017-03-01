@@ -1,6 +1,11 @@
 import React from 'react';
 import {Link} from 'react-router';
 
+const toSymbol = {
+  'USD': '$',
+  'JPY': '¥',
+  'EUR': '€'
+};
 
 class SendMoney extends React.Component {
   constructor(props) {
@@ -34,6 +39,10 @@ class SendMoney extends React.Component {
     //Button methods
     this.clearForm = this.clearForm.bind(this);
     this.submitForm = this.submitForm.bind(this);
+
+    //render functions
+    this.renderForm = this.renderForm;
+    this.renderSuccessPage = this.renderSuccessPage;
   }
 
   handleRecipient(event) {
@@ -155,20 +164,63 @@ class SendMoney extends React.Component {
     }
   }
 
+  renderForm() {
+    return (
+      <div className="send-money">
+        <div className="input-box">
+          <label>
+            To: 
+            <input required value={this.state.recipient} onChange={this.handleRecipient} />
+            {this.state.emailValidation && <span className="inline-checkmark">✓</span>}
+          </label>
+        </div>
+
+        <div className="input-box">
+          <label>
+            Amount: {toSymbol[this.state.currencyType]}
+            <input required value={this.state.amount} onChange={this.handleAmount} onBlur={this.handleBlur} onFocus={this.handleFocus} />
+            <select value={this.state.currencyType} onChange={this.handleCurrencyType}>
+              <option value="USD">USD</option>
+              <option value="EUR">EUR</option>
+              <option value="JPY">JPY</option>
+            </select>
+          </label>
+        </div>
+
+        <div className="input-box">
+          <label className="message-box">
+            Message (optional):
+            <textarea rows="3" type="text" value={this.state.message} onChange={this.handleMessage}></textarea>
+          </label>
+        </div>
+        <div>What's this payment for?</div>
+        <div className="input-box payment-type">
+          <div id="friend" className={"payment-option" + " " + (this.state.sendFriend ? 'active' : '')} onClick={this.clickPaymentType}>
+            <span>I'm sending money to family or friends</span>
+            {this.state.sendFriend && <span className="inline-checkmark">✓</span>}
+          </div>
+          <div id="service" className={"payment-option" + " " + (this.state.payServices ? 'active' : '')} onClick={this.clickPaymentType}>
+            <span>I'm paying for goods or services</span>
+            {this.state.payServices && <span className="inline-checkmark">✓</span>}
+          </div>
+        </div>
+      </div>
+    )
+  }
+  renderSuccessPage() {
+
+    return (
+      <div className="send-money">
+        <p className="success-msg">{`You have sent ${toSymbol[this.state.currencyType]}${this.state.amount} ${this.state.currencyType} to ${this.state.recipient}!`}</p>
+        <p className="success-checkmark">✓</p>
+      </div>
+    )
+  }
+
 
 
   render () {
-    const currencyType = this.state.currencyType;
-    const sendFriend = this.state.sendFriend;
-    const payServices = this.state.payServices;
-
-
-    const toSymbol = {
-      'USD': '$',
-      'JPY': '¥',
-      'EUR': '€'
-    };
-    let symbol = toSymbol[currencyType];
+    const {sendFriend, payServices} = this.state;
 
     return (
       <div className="main-sendmoney">
@@ -180,68 +232,22 @@ class SendMoney extends React.Component {
 
           <header><p>Send Money</p></header>
 
-
-          {!this.state.success && 
-            <div className="send-money">
-              <div className="input-box">
-                <label>
-                  To: 
-                  <input required value={this.state.recipient} onChange={this.handleRecipient} />
-                  {this.state.emailValidation && <span className="inline-checkmark">✓</span>}
-                </label>
-              </div>
-
-              <div className="input-box">
-                <label>
-                  Amount: {symbol}
-                  <input required value={this.state.amount} onChange={this.handleAmount} onBlur={this.handleBlur} onFocus={this.handleFocus} />
-                  <select value={this.state.currencyType} onChange={this.handleCurrencyType}>
-                    <option value="USD">USD</option>
-                    <option value="EUR">EUR</option>
-                    <option value="JPY">JPY</option>
-                  </select>
-                </label>
-              </div>
-
-              <div className="input-box">
-                <label className="message-box">
-                  Message (optional):
-                  <textarea rows="3" type="text" value={this.state.message} onChange={this.handleMessage}></textarea>
-                </label>
-              </div>
-              <div>What's this payment for?</div>
-              <div className="input-box payment-type">
-                <div id="friend" className={"payment-option" + " " + (sendFriend ? 'active' : '')} onClick={this.clickPaymentType}>
-                  <span>I'm sending money to family or friends</span>
-                  {sendFriend && <span className="inline-checkmark">✓</span>}
-                </div>
-                <div id="service" className={"payment-option" + " " + (payServices ? 'active' : '')} onClick={this.clickPaymentType}>
-                  <span>I'm paying for goods or services</span>
-                  {payServices && <span className="inline-checkmark">✓</span>}
-                </div>
-              </div>
-            </div>
-          }
-
-          {this.state.success && 
-            <div className="send-money">
-              <p className="success-msg">{`You have sent ${symbol}${this.state.amount} ${this.state.currencyType} to ${this.state.recipient}!`}</p>
-              <p className="success-checkmark">✓</p>
-            </div>
-            
+          {this.state.success ? 
+            this.renderSuccessPage()
+          : 
+            this.renderForm()
           }
 
           <footer>
-            {!this.state.success && 
-              <div className="footer-btns">
-                <button className="send-form-btn" onClick={this.clearForm}>Clear</button>
-                <button className="send-form-btn" onClick={this.submitForm}>Next</button>
-              </div>
-            }
-            {this.state.success && 
+            {this.state.success ? 
               <div className="footer-btns">
                 <button className="success-btn" onClick={this.clearForm}> Send Money</button>
                 <Link to='/history'><button className="success-btn">Transaction History</button></Link>
+              </div>
+            :
+              <div className="footer-btns">
+                <button className="send-form-btn" onClick={this.clearForm}>Clear</button>
+                <button className="send-form-btn" onClick={this.submitForm}>Next</button>
               </div>
             }
           </footer>

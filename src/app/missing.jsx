@@ -9,11 +9,11 @@ class MissingPage extends React.Component {
 
   render () {
     return (
-      <div>
+      <div className="main-errorpage">
         <header><p>404</p></header>
-        <div>404 not found</div>
+          <div>404 not found</div>
         <footer>
-          <Link to='/'><button>Back</button></Link>
+          <Link to='/'><button className="back-btn">Back</button></Link>
         </footer>
       </div>
       )

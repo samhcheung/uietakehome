@@ -13192,7 +13192,7 @@ var MissingPage = function (_React$Component) {
     value: function render() {
       return _react2.default.createElement(
         'div',
-        null,
+        { className: 'main-errorpage' },
         _react2.default.createElement(
           'header',
           null,
@@ -13215,7 +13215,7 @@ var MissingPage = function (_React$Component) {
             { to: '/' },
             _react2.default.createElement(
               'button',
-              null,
+              { className: 'back-btn' },
               'Back'
             )
           )
@@ -13256,6 +13256,12 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
+var toSymbol = {
+  'USD': '$',
+  'JPY': '¥',
+  'EUR': '€'
+};
+
 var SendMoney = function (_React$Component) {
   _inherits(SendMoney, _React$Component);
 
@@ -13293,6 +13299,10 @@ var SendMoney = function (_React$Component) {
     //Button methods
     _this.clearForm = _this.clearForm.bind(_this);
     _this.submitForm = _this.submitForm.bind(_this);
+
+    //render functions
+    _this.renderForm = _this.renderForm;
+    _this.renderSuccessPage = _this.renderSuccessPage;
     return _this;
   }
 
@@ -13434,20 +13444,131 @@ var SendMoney = function (_React$Component) {
       }
     }
   }, {
+    key: 'renderForm',
+    value: function renderForm() {
+      return _react2.default.createElement(
+        'div',
+        { className: 'send-money' },
+        _react2.default.createElement(
+          'div',
+          { className: 'input-box' },
+          _react2.default.createElement(
+            'label',
+            null,
+            'To:',
+            _react2.default.createElement('input', { required: true, value: this.state.recipient, onChange: this.handleRecipient }),
+            this.state.emailValidation && _react2.default.createElement(
+              'span',
+              { className: 'inline-checkmark' },
+              '\u2713'
+            )
+          )
+        ),
+        _react2.default.createElement(
+          'div',
+          { className: 'input-box' },
+          _react2.default.createElement(
+            'label',
+            null,
+            'Amount: ',
+            toSymbol[this.state.currencyType],
+            _react2.default.createElement('input', { required: true, value: this.state.amount, onChange: this.handleAmount, onBlur: this.handleBlur, onFocus: this.handleFocus }),
+            _react2.default.createElement(
+              'select',
+              { value: this.state.currencyType, onChange: this.handleCurrencyType },
+              _react2.default.createElement(
+                'option',
+                { value: 'USD' },
+                'USD'
+              ),
+              _react2.default.createElement(
+                'option',
+                { value: 'EUR' },
+                'EUR'
+              ),
+              _react2.default.createElement(
+                'option',
+                { value: 'JPY' },
+                'JPY'
+              )
+            )
+          )
+        ),
+        _react2.default.createElement(
+          'div',
+          { className: 'input-box' },
+          _react2.default.createElement(
+            'label',
+            { className: 'message-box' },
+            'Message (optional):',
+            _react2.default.createElement('textarea', { rows: '3', type: 'text', value: this.state.message, onChange: this.handleMessage })
+          )
+        ),
+        _react2.default.createElement(
+          'div',
+          null,
+          'What\'s this payment for?'
+        ),
+        _react2.default.createElement(
+          'div',
+          { className: 'input-box payment-type' },
+          _react2.default.createElement(
+            'div',
+            { id: 'friend', className: "payment-option" + " " + (this.state.sendFriend ? 'active' : ''), onClick: this.clickPaymentType },
+            _react2.default.createElement(
+              'span',
+              null,
+              'I\'m sending money to family or friends'
+            ),
+            this.state.sendFriend && _react2.default.createElement(
+              'span',
+              { className: 'inline-checkmark' },
+              '\u2713'
+            )
+          ),
+          _react2.default.createElement(
+            'div',
+            { id: 'service', className: "payment-option" + " " + (this.state.payServices ? 'active' : ''), onClick: this.clickPaymentType },
+            _react2.default.createElement(
+              'span',
+              null,
+              'I\'m paying for goods or services'
+            ),
+            this.state.payServices && _react2.default.createElement(
+              'span',
+              { className: 'inline-checkmark' },
+              '\u2713'
+            )
+          )
+        )
+      );
+    }
+  }, {
+    key: 'renderSuccessPage',
+    value: function renderSuccessPage() {
+
+      return _react2.default.createElement(
+        'div',
+        { className: 'send-money' },
+        _react2.default.createElement(
+          'p',
+          { className: 'success-msg' },
+          'You have sent ' + toSymbol[this.state.currencyType] + this.state.amount + ' ' + this.state.currencyType + ' to ' + this.state.recipient + '!'
+        ),
+        _react2.default.createElement(
+          'p',
+          { className: 'success-checkmark' },
+          '\u2713'
+        )
+      );
+    }
+  }, {
     key: 'render',
     value: function render() {
-      var emailValidated = this.state.emailValidation;
-      var currencyType = this.state.currencyType;
-      var sendFriend = this.state.sendFriend;
-      var payServices = this.state.payServices;
-      var success = this.state.success;
+      var _state = this.state,
+          sendFriend = _state.sendFriend,
+          payServices = _state.payServices;
 
-      var toSymbol = {
-        'USD': '$',
-        'JPY': '¥',
-        'EUR': '€'
-      };
-      var symbol = toSymbol[currencyType];
 
       return _react2.default.createElement(
         'div',
@@ -13469,120 +13590,11 @@ var SendMoney = function (_React$Component) {
               'Send Money'
             )
           ),
-          !this.state.success && _react2.default.createElement(
-            'div',
-            { className: 'send-money' },
-            _react2.default.createElement(
-              'div',
-              { className: 'input-box' },
-              _react2.default.createElement(
-                'label',
-                null,
-                'To:',
-                _react2.default.createElement('input', { required: true, value: this.state.recipient, onChange: this.handleRecipient }),
-                this.state.emailValidation && _react2.default.createElement(
-                  'span',
-                  { className: 'inline-checkmark' },
-                  '\u2713'
-                )
-              )
-            ),
-            _react2.default.createElement(
-              'div',
-              { className: 'input-box' },
-              _react2.default.createElement(
-                'label',
-                null,
-                'Amount: ',
-                symbol,
-                _react2.default.createElement('input', { required: true, value: this.state.amount, onChange: this.handleAmount, onBlur: this.handleBlur, onFocus: this.handleFocus }),
-                _react2.default.createElement(
-                  'select',
-                  { value: this.state.currencyType, onChange: this.handleCurrencyType },
-                  _react2.default.createElement(
-                    'option',
-                    { value: 'USD' },
-                    'USD'
-                  ),
-                  _react2.default.createElement(
-                    'option',
-                    { value: 'EUR' },
-                    'EUR'
-                  ),
-                  _react2.default.createElement(
-                    'option',
-                    { value: 'JPY' },
-                    'JPY'
-                  )
-                )
-              )
-            ),
-            _react2.default.createElement(
-              'div',
-              { className: 'input-box' },
-              _react2.default.createElement(
-                'label',
-                { className: 'message-box' },
-                'Message (optional):',
-                _react2.default.createElement('textarea', { rows: '3', type: 'text', value: this.state.message, onChange: this.handleMessage })
-              )
-            ),
-            _react2.default.createElement(
-              'div',
-              null,
-              'What\'s this payment for?'
-            ),
-            _react2.default.createElement(
-              'div',
-              { className: 'input-box payment-type' },
-              _react2.default.createElement(
-                'div',
-                { id: 'friend', className: "payment-option" + " " + (sendFriend ? 'active' : ''), onClick: this.clickPaymentType },
-                _react2.default.createElement(
-                  'span',
-                  null,
-                  'I\'m sending money to family or friends'
-                ),
-                sendFriend && _react2.default.createElement(
-                  'span',
-                  { className: 'inline-checkmark' },
-                  '\u2713'
-                )
-              ),
-              _react2.default.createElement(
-                'div',
-                { id: 'service', className: "payment-option" + " " + (payServices ? 'active' : ''), onClick: this.clickPaymentType },
-                _react2.default.createElement(
-                  'span',
-                  null,
-                  'I\'m paying for goods or services'
-                ),
-                payServices && _react2.default.createElement(
-                  'span',
-                  { className: 'inline-checkmark' },
-                  '\u2713'
-                )
-              )
-            )
-          ),
-          this.state.success && _react2.default.createElement(
-            'div',
-            { className: 'send-money' },
-            _react2.default.createElement(
-              'p',
-              { className: 'success-msg' },
-              'You have sent ' + symbol + this.state.amount + ' ' + this.state.currencyType + ' to ' + this.state.recipient + '!'
-            ),
-            _react2.default.createElement(
-              'p',
-              { className: 'success-checkmark' },
-              '\u2713'
-            )
-          ),
+          this.state.success ? this.renderSuccessPage() : this.renderForm(),
           _react2.default.createElement(
             'footer',
             null,
-            this.state.success && _react2.default.createElement(
+            this.state.success ? _react2.default.createElement(
               'div',
               { className: 'footer-btns' },
               _react2.default.createElement(
@@ -13599,8 +13611,7 @@ var SendMoney = function (_React$Component) {
                   'Transaction History'
                 )
               )
-            ),
-            !this.state.success && _react2.default.createElement(
+            ) : _react2.default.createElement(
               'div',
               { className: 'footer-btns' },
               _react2.default.createElement(
