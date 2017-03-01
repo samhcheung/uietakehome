@@ -158,11 +158,10 @@ class SendMoney extends React.Component {
 
 
   render () {
-    const emailValidated = this.state.emailValidation;
     const currencyType = this.state.currencyType;
     const sendFriend = this.state.sendFriend;
     const payServices = this.state.payServices;
-    const success = this.state.success;
+
 
     const toSymbol = {
       'USD': '$',
@@ -233,16 +232,16 @@ class SendMoney extends React.Component {
           }
 
           <footer>
-            {this.state.success && 
-              <div className="footer-btns">
-                <button className="success-btn" onClick={this.clearForm}> Send Money</button>
-                <Link to='/history'><button className="success-btn">Transaction History</button></Link>
-              </div>
-            }
             {!this.state.success && 
               <div className="footer-btns">
                 <button className="send-form-btn" onClick={this.clearForm}>Clear</button>
                 <button className="send-form-btn" onClick={this.submitForm}>Next</button>
+              </div>
+            }
+            {this.state.success && 
+              <div className="footer-btns">
+                <button className="success-btn" onClick={this.clearForm}> Send Money</button>
+                <Link to='/history'><button className="success-btn">Transaction History</button></Link>
               </div>
             }
           </footer>
