@@ -47,8 +47,10 @@ class SendMoney extends React.Component {
     this.setState({message: event.target.value});
   }
   handleCurrencyType(event) {
-    this.setState({amount: ''});
-    this.setState({currencyType: event.target.value});
+    this.setState({
+                    amount: '',
+                    currencyType: event.target.value
+                  });
   }
   validateEmail(email) {
     let regex = /\S+\@\w+\.\S+/ ;
@@ -56,11 +58,15 @@ class SendMoney extends React.Component {
   }
   clickPaymentType(event) {
     if(event.currentTarget.id === "friend") {
-      this.setState({sendFriend: true});
-      this.setState({payServices: false});
-    } else if (event.currentTarget.id === "goods"){
-      this.setState({sendFriend: false})
-      this.setState({payServices: true});
+      this.setState({
+                      sendFriend: true,
+                      payServices: false
+                    });
+    } else if (event.currentTarget.id === "service"){
+      this.setState({
+                      sendFriend: false,
+                      payServices: true
+                    });
     }
   }
   formatAmount(amount) {
@@ -112,31 +118,40 @@ class SendMoney extends React.Component {
 
 
   clearForm() {
-    this.setState({recipient: ''});
-    this.setState({amount: ''});
-    this.setState({currencyType: 'USD'});
-    this.setState({message: ''});
-    this.setState({sendFriend: false});
-    this.setState({payServices: false});
-    this.setState({emailValidation: false});
-    this.setState({loading: false});
-    this.setState({success: false});
+    this.setState({
+                    recipient: '',
+                    amount: '',
+                    currencyType: 'USD',
+                    message: '',
+                    sendFriend: false,
+                    payServices: false,
+                    emailValidation: false,
+                    loading: false,
+                    success: false
+                  });
   }
   submitForm() {
     const amount = this.state.amount;
     const simplifiedValue = this.simplifyAmount(amount);
     
-    if(this.state.emailValidation !== true) {
+    if(!this.state.emailValidation) {
       alert('Invalid email');
     } else if (+simplifiedValue <= 0) {
-      alert('Please enter an amount greater than zero')
+      alert('Please enter an amount greater than zero');
     } else if (!this.state.sendFriend && !this.state.payServices) {
-      alert('Please select what the payment is for')
+      alert('Please select what the payment is for');
     } else {
-      this.setState({loading: true})
+      this.setState({loading: true});
 
       //simulate callback for sending data
-      setTimeout( () => {this.setState({loading: false, success: true})}, 1000)
+      setTimeout( () => {
+        this.setState({
+                        loading: false, 
+                        success: true
+                      });
+
+      }, 1000);
+
     }
   }
 
@@ -149,91 +164,88 @@ class SendMoney extends React.Component {
     const payServices = this.state.payServices;
     const success = this.state.success;
 
-    let symbol;
-    if(currencyType === 'USD') {
-      symbol = '$';
-    } else if(currencyType === 'EUR') {
-      symbol = '€';
-    } else if(currencyType === 'JPY'){
-      symbol = '¥';
-    }
+    const toSymbol = {
+      'USD': '$',
+      'JPY': '¥',
+      'EUR': '€'
+    };
+    let symbol = toSymbol[currencyType];
 
     return (
       <div className="main-sendmoney">
         <div className="sendmoney-form">
 
-        {this.state.loading === true && 
-          <div className="overlay"><img className="spinner" src="spinner.gif" /></div>
-        }
+          {this.state.loading && 
+            <div className="overlay"><img className="spinner" src="spinner.gif" /></div>
+          }
 
-        <header><p>Send Money</p></header>
+          <header><p>Send Money</p></header>
 
 
-        {success === false && 
-          <div className="send-money">
-            <div className="input-box">
-              <label>
-                To: 
-                <input required value={this.state.recipient} onChange={this.handleRecipient} />
-                {this.state.emailValidation === true && <span className="inline-checkmark">✓</span>}
-              </label>
-            </div>
-
-            <div className="input-box">
-              <label>
-                Amount: {symbol}
-                <input required value={this.state.amount} onChange={this.handleAmount} onBlur={this.handleBlur} onFocus={this.handleFocus} />
-                <select value={this.state.currencyType} onChange={this.handleCurrencyType}>
-                  <option value="USD">USD</option>
-                  <option value="EUR">EUR</option>
-                  <option value="JPY">JPY</option>
-                </select>
-              </label>
-            </div>
-
-            <div className="input-box">
-              <label className="message-box">
-                Message (optional):
-                <textarea rows="3" type="text" value={this.state.message} onChange={this.handleMessage}></textarea>
-              </label>
-            </div>
-            <div>What's this payment for?</div>
-            <div className="input-box payment-type">
-              <div id="friend" className={"payment-option" + " " + (sendFriend ? 'active' : '')} onClick={this.clickPaymentType}>
-                <span>I'm sending money to family or friends</span>{sendFriend === true && <span className="inline-checkmark">✓</span>}
+          {!this.state.success && 
+            <div className="send-money">
+              <div className="input-box">
+                <label>
+                  To: 
+                  <input required value={this.state.recipient} onChange={this.handleRecipient} />
+                  {this.state.emailValidation && <span className="inline-checkmark">✓</span>}
+                </label>
               </div>
-              <div id="goods" className={"payment-option" + " " + (payServices ? 'active' : '')} onClick={this.clickPaymentType}>
-                <span>I'm paying for goods or services</span>{payServices === true && <span className="inline-checkmark">✓</span>}
+
+              <div className="input-box">
+                <label>
+                  Amount: {symbol}
+                  <input required value={this.state.amount} onChange={this.handleAmount} onBlur={this.handleBlur} onFocus={this.handleFocus} />
+                  <select value={this.state.currencyType} onChange={this.handleCurrencyType}>
+                    <option value="USD">USD</option>
+                    <option value="EUR">EUR</option>
+                    <option value="JPY">JPY</option>
+                  </select>
+                </label>
               </div>
-            </div>
-          </div>
-        }
 
-
-        {success === true && 
-          <div className="send-money">
-            <p className="success-msg">{`You have sent ${symbol}${this.state.amount} ${this.state.currencyType} to ${this.state.recipient}!`}</p>
-            <p className="success-checkmark">✓</p>
-          </div>
-          
-        }
-
-        <footer>
-          {success === true && 
-            <div className="footer-btns">
-              <button className="success-btn" onClick={this.clearForm}> Send Money</button>
-              <Link to='/history'><button className="success-btn">Transaction History</button></Link>
+              <div className="input-box">
+                <label className="message-box">
+                  Message (optional):
+                  <textarea rows="3" type="text" value={this.state.message} onChange={this.handleMessage}></textarea>
+                </label>
+              </div>
+              <div>What's this payment for?</div>
+              <div className="input-box payment-type">
+                <div id="friend" className={"payment-option" + " " + (sendFriend ? 'active' : '')} onClick={this.clickPaymentType}>
+                  <span>I'm sending money to family or friends</span>
+                  {sendFriend && <span className="inline-checkmark">✓</span>}
+                </div>
+                <div id="service" className={"payment-option" + " " + (payServices ? 'active' : '')} onClick={this.clickPaymentType}>
+                  <span>I'm paying for goods or services</span>
+                  {payServices && <span className="inline-checkmark">✓</span>}
+                </div>
+              </div>
             </div>
           }
-          {success === false && 
-            <div className="footer-btns">
-              <button className="send-form-btn" onClick={this.clearForm}>Clear</button>
-              <button className="send-form-btn" onClick={this.submitForm}>Next</button>
+
+          {this.state.success && 
+            <div className="send-money">
+              <p className="success-msg">{`You have sent ${symbol}${this.state.amount} ${this.state.currencyType} to ${this.state.recipient}!`}</p>
+              <p className="success-checkmark">✓</p>
             </div>
+            
           }
-        </footer>
 
-
+          <footer>
+            {this.state.success && 
+              <div className="footer-btns">
+                <button className="success-btn" onClick={this.clearForm}> Send Money</button>
+                <Link to='/history'><button className="success-btn">Transaction History</button></Link>
+              </div>
+            }
+            {!this.state.success && 
+              <div className="footer-btns">
+                <button className="send-form-btn" onClick={this.clearForm}>Clear</button>
+                <button className="send-form-btn" onClick={this.submitForm}>Next</button>
+              </div>
+            }
+          </footer>
 
         </div>  
       </div>

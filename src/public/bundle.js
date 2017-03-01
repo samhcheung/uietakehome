@@ -13315,8 +13315,10 @@ var SendMoney = function (_React$Component) {
   }, {
     key: 'handleCurrencyType',
     value: function handleCurrencyType(event) {
-      this.setState({ amount: '' });
-      this.setState({ currencyType: event.target.value });
+      this.setState({
+        amount: '',
+        currencyType: event.target.value
+      });
     }
   }, {
     key: 'validateEmail',
@@ -13328,11 +13330,15 @@ var SendMoney = function (_React$Component) {
     key: 'clickPaymentType',
     value: function clickPaymentType(event) {
       if (event.currentTarget.id === "friend") {
-        this.setState({ sendFriend: true });
-        this.setState({ payServices: false });
-      } else if (event.currentTarget.id === "goods") {
-        this.setState({ sendFriend: false });
-        this.setState({ payServices: true });
+        this.setState({
+          sendFriend: true,
+          payServices: false
+        });
+      } else if (event.currentTarget.id === "service") {
+        this.setState({
+          sendFriend: false,
+          payServices: true
+        });
       }
     }
   }, {
@@ -13389,15 +13395,17 @@ var SendMoney = function (_React$Component) {
   }, {
     key: 'clearForm',
     value: function clearForm() {
-      this.setState({ recipient: '' });
-      this.setState({ amount: '' });
-      this.setState({ currencyType: 'USD' });
-      this.setState({ message: '' });
-      this.setState({ sendFriend: false });
-      this.setState({ payServices: false });
-      this.setState({ emailValidation: false });
-      this.setState({ loading: false });
-      this.setState({ success: false });
+      this.setState({
+        recipient: '',
+        amount: '',
+        currencyType: 'USD',
+        message: '',
+        sendFriend: false,
+        payServices: false,
+        emailValidation: false,
+        loading: false,
+        success: false
+      });
     }
   }, {
     key: 'submitForm',
@@ -13407,7 +13415,7 @@ var SendMoney = function (_React$Component) {
       var amount = this.state.amount;
       var simplifiedValue = this.simplifyAmount(amount);
 
-      if (this.state.emailValidation !== true) {
+      if (!this.state.emailValidation) {
         alert('Invalid email');
       } else if (+simplifiedValue <= 0) {
         alert('Please enter an amount greater than zero');
@@ -13418,7 +13426,10 @@ var SendMoney = function (_React$Component) {
 
         //simulate callback for sending data
         setTimeout(function () {
-          _this2.setState({ loading: false, success: true });
+          _this2.setState({
+            loading: false,
+            success: true
+          });
         }, 1000);
       }
     }
@@ -13431,14 +13442,12 @@ var SendMoney = function (_React$Component) {
       var payServices = this.state.payServices;
       var success = this.state.success;
 
-      var symbol = void 0;
-      if (currencyType === 'USD') {
-        symbol = '$';
-      } else if (currencyType === 'EUR') {
-        symbol = '€';
-      } else if (currencyType === 'JPY') {
-        symbol = '¥';
-      }
+      var toSymbol = {
+        'USD': '$',
+        'JPY': '¥',
+        'EUR': '€'
+      };
+      var symbol = toSymbol[currencyType];
 
       return _react2.default.createElement(
         'div',
@@ -13446,7 +13455,7 @@ var SendMoney = function (_React$Component) {
         _react2.default.createElement(
           'div',
           { className: 'sendmoney-form' },
-          this.state.loading === true && _react2.default.createElement(
+          this.state.loading && _react2.default.createElement(
             'div',
             { className: 'overlay' },
             _react2.default.createElement('img', { className: 'spinner', src: 'spinner.gif' })
@@ -13460,7 +13469,7 @@ var SendMoney = function (_React$Component) {
               'Send Money'
             )
           ),
-          success === false && _react2.default.createElement(
+          !this.state.success && _react2.default.createElement(
             'div',
             { className: 'send-money' },
             _react2.default.createElement(
@@ -13471,7 +13480,7 @@ var SendMoney = function (_React$Component) {
                 null,
                 'To:',
                 _react2.default.createElement('input', { required: true, value: this.state.recipient, onChange: this.handleRecipient }),
-                this.state.emailValidation === true && _react2.default.createElement(
+                this.state.emailValidation && _react2.default.createElement(
                   'span',
                   { className: 'inline-checkmark' },
                   '\u2713'
@@ -13534,7 +13543,7 @@ var SendMoney = function (_React$Component) {
                   null,
                   'I\'m sending money to family or friends'
                 ),
-                sendFriend === true && _react2.default.createElement(
+                sendFriend && _react2.default.createElement(
                   'span',
                   { className: 'inline-checkmark' },
                   '\u2713'
@@ -13542,13 +13551,13 @@ var SendMoney = function (_React$Component) {
               ),
               _react2.default.createElement(
                 'div',
-                { id: 'goods', className: "payment-option" + " " + (payServices ? 'active' : ''), onClick: this.clickPaymentType },
+                { id: 'service', className: "payment-option" + " " + (payServices ? 'active' : ''), onClick: this.clickPaymentType },
                 _react2.default.createElement(
                   'span',
                   null,
                   'I\'m paying for goods or services'
                 ),
-                payServices === true && _react2.default.createElement(
+                payServices && _react2.default.createElement(
                   'span',
                   { className: 'inline-checkmark' },
                   '\u2713'
@@ -13556,7 +13565,7 @@ var SendMoney = function (_React$Component) {
               )
             )
           ),
-          success === true && _react2.default.createElement(
+          this.state.success && _react2.default.createElement(
             'div',
             { className: 'send-money' },
             _react2.default.createElement(
@@ -13573,7 +13582,7 @@ var SendMoney = function (_React$Component) {
           _react2.default.createElement(
             'footer',
             null,
-            success === true && _react2.default.createElement(
+            this.state.success && _react2.default.createElement(
               'div',
               { className: 'footer-btns' },
               _react2.default.createElement(
@@ -13591,7 +13600,7 @@ var SendMoney = function (_React$Component) {
                 )
               )
             ),
-            success === false && _react2.default.createElement(
+            !this.state.success && _react2.default.createElement(
               'div',
               { className: 'footer-btns' },
               _react2.default.createElement(
