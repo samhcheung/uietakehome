@@ -191,7 +191,7 @@ input:focus, textarea:focus{
 }
 
 .sendmoney-form {
-  overflow: scroll;
+  overflow: auto;
 }
 .input-box {
   display:flex;
@@ -274,6 +274,8 @@ Transaction History
   display: flex;
   padding: 10px 15px;
   justify-content: space-between;
+  align-items: center;
+  min-height: 7%;
 }
 .transaction-item:nth-child(odd) {
   background: rgb(228,213,194);
