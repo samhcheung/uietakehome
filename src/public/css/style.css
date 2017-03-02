@@ -208,6 +208,7 @@ input:focus, textarea:focus{
   margin-top: 10px;
   margin-bottom: 10px;
   box-sizing: border-box;
+
 }
 .input-box > label {
   padding: 10px;
@@ -218,7 +219,7 @@ input:focus, textarea:focus{
 .input-box > label > input {
   display:flex;
   flex: 1;
-  font-size: 12px;
+  font-size: 13px;
 }
 .inline-checkmark {
   font-size: 13px;
@@ -229,11 +230,17 @@ input:focus, textarea:focus{
 }
 .payment-type {
   flex-direction: column;
+  overflow: hidden;
+
 }
 .payment-option {
   display:flex;
   padding: 12px 10px;
   justify-content: space-between;
+}
+.payment-option:hover {
+  background-color: rgb(250,200,140);
+  cursor: pointer;
 }
 .payment-option:nth-child(1) {
   border-bottom: 1px solid black;

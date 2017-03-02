@@ -84,11 +84,13 @@ class SendMoney extends React.Component {
     let formattedResult = '';
     
     if(currencyType === 'USD' || currencyType === 'EUR') {
-      regex = /^(?=.*[1-9])\d*(?:\.\d*)?$/;
+      //regex = /^(?=.*[1-9])\d*(?:\.\d*)?$/;
+      regex = /\d+(\.\d{1,2})?/;
     } else if(currencyType === 'JPY') {
-      regex = /^[1-9]\d*$/;
+      //regex = /^[1-9]\d*$/;
+      regex = /\d+/;
     }
-    //Match the format of the regex and store value 
+    //Grab the first match and store value 
     formattedResult = amount.match(regex) ? amount.match(regex)[0] : '';
     
     //If not JPY, format with decimals
@@ -119,6 +121,7 @@ class SendMoney extends React.Component {
   handleBlur(event) {
     const formattedvalue = this.formatAmount(this.state.amount);
     this.setState({amount: formattedvalue});
+
   }
   handleFocus(event) {
     const simplifiedValue = this.simplifyAmount(this.state.amount);
@@ -169,7 +172,7 @@ class SendMoney extends React.Component {
       <div className="send-money">
         <div className="input-box">
           <label>
-            To: 
+            To:&nbsp;
             <input required value={this.state.recipient} onChange={this.handleRecipient} />
             {this.state.emailValidation && <span className="inline-checkmark">✓</span>}
           </label>
@@ -177,7 +180,7 @@ class SendMoney extends React.Component {
 
         <div className="input-box">
           <label>
-            Amount: {toSymbol[this.state.currencyType]}
+            Amount: {toSymbol[this.state.currencyType]}&nbsp;
             <input required value={this.state.amount} onChange={this.handleAmount} onBlur={this.handleBlur} onFocus={this.handleFocus} />
             <select value={this.state.currencyType} onChange={this.handleCurrencyType}>
               <option value="USD">USD</option>

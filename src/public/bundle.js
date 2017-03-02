@@ -13359,11 +13359,13 @@ var SendMoney = function (_React$Component) {
       var formattedResult = '';
 
       if (currencyType === 'USD' || currencyType === 'EUR') {
-        regex = /^(?=.*[1-9])\d*(?:\.\d*)?$/;
+        //regex = /^(?=.*[1-9])\d*(?:\.\d*)?$/;
+        regex = /\d+(\.\d{1,2})?/;
       } else if (currencyType === 'JPY') {
-        regex = /^[1-9]\d*$/;
+        //regex = /^[1-9]\d*$/;
+        regex = /\d+/;
       }
-      //Match the format of the regex and store value 
+      //Grab the first match and store value 
       formattedResult = amount.match(regex) ? amount.match(regex)[0] : '';
 
       //If not JPY, format with decimals
@@ -13455,7 +13457,7 @@ var SendMoney = function (_React$Component) {
           _react2.default.createElement(
             'label',
             null,
-            'To:',
+            'To:\xA0',
             _react2.default.createElement('input', { required: true, value: this.state.recipient, onChange: this.handleRecipient }),
             this.state.emailValidation && _react2.default.createElement(
               'span',
@@ -13472,6 +13474,7 @@ var SendMoney = function (_React$Component) {
             null,
             'Amount: ',
             toSymbol[this.state.currencyType],
+            '\xA0',
             _react2.default.createElement('input', { required: true, value: this.state.amount, onChange: this.handleAmount, onBlur: this.handleBlur, onFocus: this.handleFocus }),
             _react2.default.createElement(
               'select',
